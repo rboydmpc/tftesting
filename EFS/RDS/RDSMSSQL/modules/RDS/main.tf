@@ -9,7 +9,7 @@
 locals {
    #Conditionally set the iops value.
   var_iops = {
-    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : ""
+    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage) : ""
   }
   var_storage = {
     value = max(var.allocated_storage, (var.max_allocated_storage*0.02))
