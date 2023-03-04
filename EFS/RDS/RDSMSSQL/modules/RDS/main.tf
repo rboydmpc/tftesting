@@ -7,7 +7,6 @@
 #}
 
 locals {
-  #Conditionally set the iops value.
   var_iops = {
     value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : null
   }
@@ -21,9 +20,6 @@ locals {
   
 }
 
-var_iops = {
-    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : null
-  }
 resource "aws_db_subnet_group" "group" {
   name       = format("%s-sngrp", lower(var.db_name))
   subnet_ids = local.var_az_subnets.value
