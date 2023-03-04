@@ -1,16 +1,16 @@
 # Assign null values to empty string to make conpact() work
 
 
-locals {
-  vpc_subnet_az1 = length(regexall("^subnet", var.vpc_subnet_az1)) > 0 ? var.vpc_subnet_az1 : ""
-  vpc_subnet_az2 = length(regexall("^subnet", var.vpc_subnet_az2)) > 0 ? var.vpc_subnet_az2 : ""
-}
-
 #locals {
-  # Conditionally set the iops value.
-#  var_iops = {
-#    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : null
-#  }
+#  vpc_subnet_az1 = length(regexall("^subnet", var.vpc_subnet_az1)) > 0 ? var.vpc_subnet_az1 : ""
+#  vpc_subnet_az2 = length(regexall("^subnet", var.vpc_subnet_az2)) > 0 ? var.vpc_subnet_az2 : ""
+#}
+
+locals {
+   #Conditionally set the iops value.
+  var_iops = {
+    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : null
+  }
   var_storage = {
     value = max(var.allocated_storage, (var.max_allocated_storage*0.02))
   }
