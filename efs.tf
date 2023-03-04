@@ -17,45 +17,49 @@ variable "secret_key" {}
 variable "region" {
    default = "us-east-1"
 }
-
-variable "bucket_prefix" {
-   description = "Enter mutiliple bucket prefix names to cretae multiple buckets like ''test'' or ''test'', ''new''"
+variable "mytag" {
 }
 
-variable "acl_value" {
-   default = "private"
+# Creating Amazon EFS File system
+resource "aws_efs_file_system" "myfilesystem" {
+  lifecycle_policy {
+    transition_to_ia = "AFTER_30_DAYS"
+  }
+  tags = {
+    Name = var.mytag
+  }
 }
 
-variable "bucket_count" {
+resource "aws_efs_access_point" "test" {
+  file_system_id = aws_efs_file_system.myfilesystem.id
 }
 
-variable "force_destroy" {
-    type = bool   
-    default = "false"
+resource "aws_efs_file_system_policy" "policy" {
+  file_system_id = aws_efs_file_system.myfilesystem.id
+  policy = <<POLICY
+{
+    "Version": "2012-10-17",
+    "Id": "Policy01",
+    "Statement": [
+        {
+            "Sid": "Statement",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Resource": "${aws_efs_file_system.myfilesystem.arn}",
+            "Action": [
+                "elasticfilesystem:ClientMount",
+                "elasticfilesystem:ClientRootAccess",
+                "elasticfilesystem:ClientWrite"
+            ],
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": "false"
+                }
+            }
+        }
+    ]
 }
-
-variable "mytest" {
-}
-resource "aws_s3_bucket" "s3" {
-    count = var.bucket_count
-    bucket_prefix = var.bucket_prefix
-    force_destroy = var.force_destroy
-    tags = {
-    Date = timestamp()
-    mytest = var.mytest
-    }
-}
-output "arn" {
-  description = "ARN of the bucket"
-  value       = aws_s3_bucket.s3[0].arn
-}
-
-output "name" {
-  description = "Name (id) of the bucket"
-  value       = aws_s3_bucket.s3[0].id
-}
-
-output "domainname" {
-  description = "Domain NAme of Bucket"
-  value       = aws_s3_bucket.s3[0].bucket_domain_name
+POLICY
 }
