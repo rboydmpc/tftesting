@@ -118,7 +118,7 @@ variable "allocated_storage" {
 variable "max_allocated_storage" {
   description = "Specifies the value for Storage Autoscaling"
   type        = number
-  #default     = 1000
+  default     = 1000
 }
 
 variable "engine_version" {
