@@ -2,6 +2,6 @@
 
 locals {
   var_iops = {
-    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage*0.5) : null
+    value = var.storage_type == "io1" ? max(var.iops, var.max_allocated_storage *0.5) : null
   }
 }
